@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<html ng-app="registerUser">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Register</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/basic.css">
+
+    <!-- Javascript -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="core.js"></script>
+
+</head>
+
+<body ng-controller="mainController">
+
+    <div class="container">
+        <h1>Register</h1>
+        <div id="username-form" class="row">
+            <div class="col-sm-8 col-sm-offset-0 text-left">
+                <form>
+                    <div class="form-group" align="left">
+                        <p>Username:</p>
+                        <input type="text" class="form-control input-lg text-center" placeholder="Enter username here..." ng-model="formUsernameData.text">
+                    </div>
+
+                    <div class="form-group" align="left">
+                        <p>Password:</p>
+                        <input type="text" class="form-control input-lg text-center" placeholder="Enter password here..." ng-model="formPasswordData.text">
+                    </div>
+
+                    <div class="form-group" align="left">
+                        <p>Email:</p>
+                        <input type="text" class="form-control input-lg text-center" placeholder="Enter email here..." ng-model="formEmailData.text">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="registerUser()">Register</button>
+                </form>
+                <BR>
+                <p>Result: {{ registeredUsername }}</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

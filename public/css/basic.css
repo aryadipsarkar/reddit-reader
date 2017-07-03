@@ -1,0 +1,17 @@
+html { 
+	overflow-y:scroll; 
+}
+
+body {
+	padding-top:50px; 
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+	background-color: #DECBB7;
+}
+
+.table-striped>tbody>tr:nth-child(even)>td,
+.table-striped>tbody>tr:nth-child(even)>th {
+	background-color: #F7F0F5;
+}
