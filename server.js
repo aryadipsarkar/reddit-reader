@@ -125,15 +125,13 @@ app.post('/logout', function (req, res) {
 });
 
 /**
- * @api {post} /getPosts Get number of posts
- * @apiName Logout
- * @apiGroup User
+ * @api {get} /getPosts Get number of posts
+ * @apiName Get Posts
+ * @apiGroup Reader
  *
- * @apiSuccess {status} 200 active session exists for user
+ * @apiSuccess {String[]} last 25 most recent posts
  */
-app.post('/getPosts', function (req, res) {
-    var postLimit = req.body.post_limit;
-
+app.get('/getPosts', function (req, res) {
     connection.query('SELECT password FROM users WHERE username = ?', username, function (error, results) {
         if(results.length === 0) {
             res.sendStatus(401);

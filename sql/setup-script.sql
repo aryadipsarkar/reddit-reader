@@ -16,6 +16,7 @@ CREATE TABLE posts (
   has_embedded_media boolean default false,
   permalink varchar(100),
   num_comments varchar(100),
+  last_updated datetime,
   PRIMARY KEY (post_id)
 );
 

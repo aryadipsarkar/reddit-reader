@@ -51,12 +51,13 @@ cron.schedule('*/1 * * * *', function() {
 
             /** Posts setup **/
             var postInfo  = {   post_id: listingData.id,
-                post_title: listingData.title,
-                post_author: listingData.author,
-                post_image: (listingData.preview ? listingData.preview.images[0].source.url : null),
-                has_embedded_media: (listingData.secure_media !== null),
-                permalink: listingData.permalink,
-                num_comments: listingData.num_comments
+                                post_title: listingData.title,
+                                post_author: listingData.author,
+                                post_image: (listingData.preview ? listingData.preview.images[0].source.url : null),
+                                has_embedded_media: (listingData.secure_media !== null),
+                                permalink: listingData.permalink,
+                                num_comments: listingData.num_comments,
+                                last_updated: new Date()
             };
             connection.query('SELECT * FROM posts where post_id = ?', listingData.id, function (error, results) {
                 if (results.length === 0) {

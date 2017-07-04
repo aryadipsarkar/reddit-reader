@@ -77,9 +77,8 @@ var reader = angular.module('reader', []);
 reader.controller('readController', function($scope, $http){
     $scope.posts = [];
 
-    var postLimitJson = '{"post_limit": "25"}'; // hardcoded but could be passed in through HTML
     $scope.getPosts = function() {
-        $http.post('/getPosts', postLimitJson)
+        $http.get('/getPosts')
             .success(function(data) {
                 $scope.posts = [];
                 $scope.comments = data.message;
