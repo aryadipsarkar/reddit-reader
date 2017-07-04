@@ -32,6 +32,9 @@ app.use(bodyParser.json());
 var serveStatic = require('serve-static');
 app.use(serveStatic('./public', {'index': ['index.html', 'index.htm']}));
 
+/** Helper functions **/
+var jsonCleaner = require('./helpers/json-cleaner');
+
 /**
  * @api {post} /registerUser Registers New User
  * @apiName RegisterUser
@@ -132,28 +135,50 @@ app.post('/logout', function (req, res) {
  * @apiSuccess {String[]} last 25 most recent posts
  */
 app.get('/getPosts', function (req, res) {
-    connection.query('SELECT password FROM users WHERE username = ?', username, function (error, results) {
+    connection.query('SELECT * FROM posts ORDER BY last_updated DESC LIMIT 25', function (error, results) {
+        console.log("got the post request");
         if(results.length === 0) {
-            res.sendStatus(401);
-        }
-        else if (results[0].password === password) {
-            console.log("checking session");
-            if(req.session && req.session.user && req.session.user === username) {
-
-                req.session.regenerate(function() {
-                    console.log("after restarting the session");
-                    req.session.user = username;
-                    res.sendStatus(200);
-                });
-
-            }
-            else {
-                req.session.user = username;
-                res.sendStatus(200);
-            }
+            res.sendStatus(204);
         }
         else
-            res.sendStatus(401)
+        {
+            var posts = '';
+            for (var i = 0; i < results.length; i++) {
+                var id = results[i].post_id;
+                var title = jsonCleaner(results[i].post_title);
+                var author = results[i].post_author;
+                var image_url = results[i].post_image;
+                var link = results[i].permalink;
+                var comments = results[i].num_comments;
+
+                var has_media = results[i].has_embedded_media;
+                var embedded_media = '';
+                var embedded_thumb = '';
+                if(has_media ===1) {
+                    connection.query('SELECT * FROM embedded_media WHERE post_id = ?', id, function (error, mediaResults) {
+                        if (error)
+                            console.log("Error getting embedded media: " + error);
+
+                        embedded_media = mediaResults[0].content;
+                        embedded_thumb = mediaResults[0].thumbnail_url;
+                    });
+                }
+                var postJson = '{'+
+                    '"title":"' + title + '",' +
+                    '"author":"' + author + '",' +
+                    '"image_url":"' + image_url + '",' +
+                    '"link":"' + link + '",' +
+                    '"num_comments":"' + comments + '",' +
+                    '"media_html":"' + embedded_media + '",' +
+                    '"media_thumbnail":"' + embedded_thumb + '"' +
+                    '}';
+                posts = posts.concat(postJson);
+
+                if (i !== results.length - 1)
+                    posts = posts.concat(",");
+            }
+            res.send('{"message":[' + posts + ']}');
+        }
     });
 });
 

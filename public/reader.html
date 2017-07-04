@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="reader">
+<html data-ng-controller="readController" data-ng-init="getPosts()" ng-app="reader">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,14 +24,14 @@
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
-            <!--<thead>-->
-            <!--<th>:</th>-->
-            <!--</thead>-->
-            <tr ng-repeat="result in results">
-                <td ng-hide="!(result.commentText)">{{ result.commentText }}</td>
+            <tr ng-repeat="post in posts">
+                <td>
+                    <img src="{{post.media_thumbnail}}">
+                    <h3><a href="https://www.reddit.com/{{post.link}}">{{ post.title }}</a></h3>
+                    by {{ post.author}} | comments: <b>{{post.num_comments}}</b>
+                </td>
             </tr>
         </table>
-        <p ng-show="!(result.commentText)">No posts to show</p>
     </div>
 </div>
 

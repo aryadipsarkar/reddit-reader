@@ -3,15 +3,36 @@ html {
 }
 
 body {
-	padding-top:50px; 
+	padding-top:50px;
 }
 
 .table-striped>tbody>tr:nth-child(odd)>td,
 .table-striped>tbody>tr:nth-child(odd)>th {
-	background-color: #DECBB7;
+	background-color: #BECFD1;
 }
 
 .table-striped>tbody>tr:nth-child(even)>td,
 .table-striped>tbody>tr:nth-child(even)>th {
-	background-color: #F7F0F5;
+	background-color: #EDF2F4;
+}
+
+/* unvisited link */
+a:link {
+	color: #4C696B;
+}
+
+/* visited link */
+a:visited {
+	color: #4C696B;
+}
+
+/* mouse over link */
+a:hover {
+	color: #847E89;
+	text-decoration: none;
+}
+
+/* selected link */
+a:active {
+	color: #4C696B;
 }

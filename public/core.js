@@ -75,24 +75,20 @@ logout.controller('loginLogoutController', function($scope, $http){
 
 var reader = angular.module('reader', []);
 reader.controller('readController', function($scope, $http){
-    $scope.posts = [];
-
     $scope.getPosts = function() {
         $http.get('/getPosts')
-            .success(function(data) {
+            .success(function(data, status) {
                 $scope.posts = [];
-                $scope.comments = data.message;
-                if(data.message == "No results.")
-                    $scope.results.push(data.message);
-                else {
-                    for (var i=0; i<$scope.comments.length; i++) {
-                        $scope.results.push($scope.comments[i]);
+                $scope.rawPosts = data.message;
+                if(status !== 204) {
+                    for (var i = 0; i < $scope.rawPosts.length; i++) {
+                        $scope.posts.push($scope.rawPosts[i]);
                     }
                 }
             })
-            .error(function(data) {
-                $scope.comments = "ERROR";
-                console.log('Error: ' + data.message);
+            .error(function(error) {
+                $scope.posts.push("ERROR");
+                console.log('Error: ' + error.message);
             });
     };
 });
