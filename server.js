@@ -34,6 +34,7 @@ app.use(serveStatic('./public', {'index': ['index.html', 'index.htm']}));
 
 /** Helper functions **/
 var jsonCleaner = require('./helpers/json-cleaner');
+var convertToHtml = require('./helpers/json-to-html');
 
 /**
  * @api {post} /registerUser Registers New User
@@ -135,7 +136,13 @@ app.post('/logout', function (req, res) {
  * @apiSuccess {String[]} last 25 most recent posts
  */
 app.get('/getPosts', function (req, res) {
-    connection.query('SELECT * FROM posts ORDER BY last_updated DESC LIMIT 25', function (error, results) {
+    connection.query('SELECT p.post_title as post_title, p.post_author as post_author, ' +
+        'p.post_image as post_image, p.permalink as permalink, p.num_comments as num_comments, ' +
+        't1.content as content, t1.thumbnail_url as thumbnail_url ' +
+        'FROM posts p ' +
+        'LEFT JOIN (SELECT * FROM embedded_media WHERE thumbnail_url NOT LIKE \'https://i.embed.ly/1/image%\') t1 ' +
+        'ON t1.post_id = p.post_id ' +
+        'ORDER BY p.last_updated DESC LIMIT 25', function (error, results) {
         console.log("got the post request");
         if(results.length === 0) {
             res.sendStatus(204);
@@ -144,25 +151,13 @@ app.get('/getPosts', function (req, res) {
         {
             var posts = '';
             for (var i = 0; i < results.length; i++) {
-                var id = results[i].post_id;
                 var title = jsonCleaner(results[i].post_title);
                 var author = results[i].post_author;
                 var image_url = results[i].post_image;
                 var link = results[i].permalink;
                 var comments = results[i].num_comments;
-
-                var has_media = results[i].has_embedded_media;
-                var embedded_media = '';
-                var embedded_thumb = '';
-                if(has_media ===1) {
-                    connection.query('SELECT * FROM embedded_media WHERE post_id = ?', id, function (error, mediaResults) {
-                        if (error)
-                            console.log("Error getting embedded media: " + error);
-
-                        embedded_media = mediaResults[0].content;
-                        embedded_thumb = mediaResults[0].thumbnail_url;
-                    });
-                }
+                var embedded_media = convertToHtml(jsonCleaner(results[i].content));
+                var embedded_thumb = results[i].thumbnail_url;
                 var postJson = '{'+
                     '"title":"' + title + '",' +
                     '"author":"' + author + '",' +
@@ -177,6 +172,7 @@ app.get('/getPosts', function (req, res) {
                 if (i !== results.length - 1)
                     posts = posts.concat(",");
             }
+            // console.log(posts);
             res.send('{"message":[' + posts + ']}');
         }
     });

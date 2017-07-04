@@ -14,7 +14,7 @@ var request = require('request');
 // Task runs every 1 hour to refresh the data in the db
 cron.schedule('*/1 * * * *', function() {
     console.log('refreshing content...');
-    var jsonUrl = 'https://www.reddit.com/r/videos/hot.json';
+    var jsonUrl = 'https://www.reddit.com/r/cats/hot.json';
     var rawData = '';
 
     request({url: jsonUrl, json: true}, function (error, response, body) {

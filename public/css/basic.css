@@ -9,11 +9,13 @@ body {
 .table-striped>tbody>tr:nth-child(odd)>td,
 .table-striped>tbody>tr:nth-child(odd)>th {
 	background-color: #BECFD1;
+	vertical-align: middle;
 }
 
 .table-striped>tbody>tr:nth-child(even)>td,
 .table-striped>tbody>tr:nth-child(even)>th {
 	background-color: #EDF2F4;
+	vertical-align: middle;
 }
 
 /* unvisited link */

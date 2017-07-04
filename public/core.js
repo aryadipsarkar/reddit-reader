@@ -80,6 +80,7 @@ reader.controller('readController', function($scope, $http){
             .success(function(data, status) {
                 $scope.posts = [];
                 $scope.rawPosts = data.message;
+                // $scope.rawPosts = $scope.rawPosts.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
                 if(status !== 204) {
                     for (var i = 0; i < $scope.rawPosts.length; i++) {
                         $scope.posts.push($scope.rawPosts[i]);
@@ -88,6 +89,32 @@ reader.controller('readController', function($scope, $http){
             })
             .error(function(error) {
                 $scope.posts.push("ERROR");
+                console.log('Error: ' + error.message);
+            });
+    };
+});
+
+var star = angular.module('star', []);
+star.controller('favoritesController', function($scope, $http){
+    $scope.starPost = function() {
+        $http.post('/setFavorite')
+            .success(function(data, status) {
+
+            })
+            .error(function(error) {
+                console.log('Error: ' + error.message);
+            });
+    };
+});
+
+var getStars = angular.module('getStars', []);
+getStars.controller('favoritesController', function($scope, $http){
+    $scope.starPost = function() {
+        $http.get('/getFavorites')
+            .success(function(data, status) {
+
+            })
+            .error(function(error) {
                 console.log('Error: ' + error.message);
             });
     };
