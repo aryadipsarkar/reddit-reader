@@ -73,4 +73,4 @@ logout.controller('loginLogoutController', function($scope, $http){
     };
 });
 
-angular.bootstrap(document.getElementById("app2"), ['logout']);
+// angular.bootstrap(document.getElementById("app2"), ['logout']); TODO: fix me
