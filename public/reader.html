@@ -1,0 +1,39 @@
+<!doctype html>
+<html ng-app="reader">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Reddit Reader</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/basic.css">
+
+    <!-- Javascript -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="core.js"></script>
+
+</head>
+
+<body ng-controller="readController">
+<div class="container">
+    <div class="jumbotron text-center">
+        <h1>Welcome to the Reddit Reader</h1>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <!--<thead>-->
+            <!--<th>:</th>-->
+            <!--</thead>-->
+            <tr ng-repeat="result in results">
+                <td ng-hide="!(result.commentText)">{{ result.commentText }}</td>
+            </tr>
+        </table>
+        <p ng-show="!(result.commentText)">No posts to show</p>
+    </div>
+</div>
+
+</body>
+</html>

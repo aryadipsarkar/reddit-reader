@@ -32,74 +32,6 @@ app.use(bodyParser.json());
 var serveStatic = require('serve-static');
 app.use(serveStatic('./public', {'index': ['index.html', 'index.htm']}));
 
-/** Data Processing **/
-var cron = require('node-cron');
-var request = require('request');
-var async = require("async");
-
-// Task runs every 1 hour to refresh the data in the db
-cron.schedule('0 * * * * *', function(){
-    console.log('running a task');
-    var jsonUrl = 'https://www.reddit.com/r/videos/hot.json';
-    var rawData = '';
-
-    request({url: jsonUrl, json: true}, function (error, response, body) {
-        console.log("sent request");
-        if (!error && response.statusCode === 200) {
-            rawData = body;
-        }
-
-        for(var i = 0; i < rawData.data.children.length; i++) {
-            console.log("---------------------------------");
-            var listingData = rawData.data.children[i].data;
-            console.log(listingData.title);
-            var embedMediaId = -1;
-
-            // If embedded media exists for this listing then save it in the db
-            if(listingData.secure_media !== null) {
-                // Media Type ID setup
-                var mediaTypeId = -1;
-                var mediaType = {media_type: listingData.secure_media.type};
-                connection.query('SELECT * FROM media_types where media_type = ?',
-                    listingData.secure_media.type, function (error, results) {
-                        if (results.length === 0) {
-                            connection.query('INSERT INTO media_types SET ?', mediaType, function (err, result) {
-                                mediaTypeId = result.insertId;
-                                console.log("media type id " + result.insertId);
-                            });
-                        }
-                        else {
-                            mediaTypeId = results[0].media_type_id;
-                        }
-                    });
-
-                // Embedded Media setup
-                var mediaInfo = {
-                    content: listingData.media_embed.content,
-                    thumbnail_url: listingData.secure_media.oembed.thumbnail_url,
-                    media_type_id: mediaTypeId
-                };
-                connection.query('INSERT INTO embedded_media SET ?', mediaInfo, function (err, result) {
-                    embedMediaId = result.insertId;
-                    console.log("embed media id: " + result.insertId); // FIXME: delete
-                });
-            }
-
-            // Posts setup
-            var postInfo  = {   post_title: listingData.title,
-                                post_author: listingData.author,
-                                post_image: listingData.preview.images[0].source.url,
-                                embedded_media: embedMediaId,
-                                permalink: listingData.permalink,
-                                num_comments: listingData.num_comments
-            };
-            connection.query('INSERT INTO posts SET ?', postInfo, function(err, result) {
-                console.log("post id: " + result.insertId);
-            });
-        }
-    })
-});
-
 /**
  * @api {post} /registerUser Registers New User
  * @apiName RegisterUser
@@ -190,6 +122,41 @@ app.post('/logout', function (req, res) {
 	else {
 		res.sendStatus(204);
 	}
+});
+
+/**
+ * @api {post} /getPosts Get number of posts
+ * @apiName Logout
+ * @apiGroup User
+ *
+ * @apiSuccess {status} 200 active session exists for user
+ */
+app.post('/getPosts', function (req, res) {
+    var postLimit = req.body.post_limit;
+
+    connection.query('SELECT password FROM users WHERE username = ?', username, function (error, results) {
+        if(results.length === 0) {
+            res.sendStatus(401);
+        }
+        else if (results[0].password === password) {
+            console.log("checking session");
+            if(req.session && req.session.user && req.session.user === username) {
+
+                req.session.regenerate(function() {
+                    console.log("after restarting the session");
+                    req.session.user = username;
+                    res.sendStatus(200);
+                });
+
+            }
+            else {
+                req.session.user = username;
+                res.sendStatus(200);
+            }
+        }
+        else
+            res.sendStatus(401)
+    });
 });
 
 var server = app.listen(2500, function () {

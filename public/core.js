@@ -73,4 +73,29 @@ logout.controller('loginLogoutController', function($scope, $http){
     };
 });
 
+var reader = angular.module('reader', []);
+reader.controller('readController', function($scope, $http){
+    $scope.posts = [];
+
+    var postLimitJson = '{"post_limit": "25"}'; // hardcoded but could be passed in through HTML
+    $scope.getPosts = function() {
+        $http.post('/getPosts', postLimitJson)
+            .success(function(data) {
+                $scope.posts = [];
+                $scope.comments = data.message;
+                if(data.message == "No results.")
+                    $scope.results.push(data.message);
+                else {
+                    for (var i=0; i<$scope.comments.length; i++) {
+                        $scope.results.push($scope.comments[i]);
+                    }
+                }
+            })
+            .error(function(data) {
+                $scope.comments = "ERROR";
+                console.log('Error: ' + data.message);
+            });
+    };
+});
+
 // angular.bootstrap(document.getElementById("app2"), ['logout']); TODO: fix me
