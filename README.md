@@ -8,6 +8,7 @@ to start pulling and populate the db (this is the way the cron job is setup).
 3. node server.js to start the server
 
 Notes:
+- Database portion of the prject is under /database_portion
 - The favoriting is not working on AWS which I think has to do with my minimal implementation of session management
 - There were some encoding issues that came up in the titles which I didn't take the time to look into
 - There should be a foreign key from posts to embedded_media and enumerate media_type, but due to my limited Node
