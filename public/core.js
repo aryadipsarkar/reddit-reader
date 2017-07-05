@@ -32,9 +32,7 @@ var login = angular.module('login', []);
 login.controller('loginLogoutController', function($scope, $http){
     $scope.formUsernameData = {};   // Stores the username data from the user input form
     $scope.formPasswordData = {};   // Stores password data from user input form
-
     $scope.result = "";            // List stores all the results
-
     $scope.login = function() {
         var userJson = '{' +
             '"username":"'+$scope.formUsernameData.text+'",' +
@@ -54,12 +52,8 @@ login.controller('loginLogoutController', function($scope, $http){
                     $scope.result = "error";
             });
     };
-});
 
-var logout = angular.module('logout', []);
-logout.controller('loginLogoutController', function($scope, $http){
-    $scope.logoutResult = "";            // List stores all the results
-
+    $scope.logoutResult = "";
     $scope.login = function() {
         $http.post('/logout', "")
             .success(function(data, status) {
@@ -124,5 +118,3 @@ reader.controller('readController', function($scope, $http) {
         $scope.getStarredPosts();
     };
 });
-
-// angular.bootstrap(document.getElementById("app2"), ['logout']); TODO: fix me

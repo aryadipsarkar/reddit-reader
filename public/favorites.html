@@ -1,0 +1,49 @@
+<!doctype html>
+<html data-ng-controller="readController" data-ng-init="getAllPosts()" ng-app="reader">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Reddit Reader Favorites</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/basic.css">
+
+    <!-- Javascript -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="core.js"></script>
+</head>
+<body ng-controller="readController">
+<div class="container">
+    <div class="jumbotron text-center">
+        <h1>Reddit Reader Favorites</h1>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tbody ng-repeat="post in posts">
+                <tr ng-repeat="starredPost in starredPosts" ng-hide="starredPost != post.id">
+                    <td>
+                        <span ng-show="post.media_thumbnail!='null'">
+                            <a href="" ng-click="show=true" ng-hide="show">
+                                <img src="{{post.media_thumbnail}}" height="50" width="50">
+                            </a>
+                            <div ng-hide="!show">
+                                <span ng-bind-html-unsafe="post.media_html">{{post.media_html}}</span>
+                                <a href="" ng-click="show=false">collapse</a>
+                            </div>
+                        </span>
+                    </td>
+                    <td>
+                        <h3><a href="https://www.reddit.com/{{post.link}}">{{ post.title }}</a></h3>
+                        by {{ post.author}} | comments: <b>{{post.num_comments}}</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
