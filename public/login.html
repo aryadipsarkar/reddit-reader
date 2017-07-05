@@ -18,7 +18,7 @@
 
 </head>
 
-<body ng-controller="loginLogoutController">
+<body ng-controller="loginController">
 <div class="container">
     <h1>Login</h1>
     <div id="username-form" class="row">
@@ -38,6 +38,7 @@
             </form>
             <BR>
             <p>Result: {{ result }}</p>
+            <p ng-show="result =='OK'"><a href="./reader.html"><b>Continue to reader</b></a></p>
         </div>
     </div>
 </div>

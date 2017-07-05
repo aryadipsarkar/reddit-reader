@@ -66,7 +66,6 @@ app.post('/registerUser', function (req, res) {
 	   			else {
 					res.send('{"message": "'+username+'"}');
 				}
-			console.log(query.sql); //TODO: delete me after testing
 			});
 	   	}
    });
@@ -119,6 +118,7 @@ app.post('/login', function (req, res) {
  * @apiSuccess {status} 200 active session exists for user
  */
 app.post('/logout', function (req, res) {
+    console.log("got logout request");
 	if(req.session && req.session.user) {
 		req.session.destroy();
 		res.sendStatus(200);

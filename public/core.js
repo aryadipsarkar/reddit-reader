@@ -29,7 +29,7 @@ registerUser.controller('mainController', function($scope, $http){
 });
 
 var login = angular.module('login', []);
-login.controller('loginLogoutController', function($scope, $http){
+login.controller('loginController', function($scope, $http) {
     $scope.formUsernameData = {};   // Stores the username data from the user input form
     $scope.formPasswordData = {};   // Stores password data from user input form
     $scope.result = "";            // List stores all the results
@@ -50,19 +50,6 @@ login.controller('loginLogoutController', function($scope, $http){
             .error(function(data, status) {
                 if(status === 401)
                     $scope.result = "error";
-            });
-    };
-
-    $scope.logoutResult = "";
-    $scope.login = function() {
-        $http.post('/logout', "")
-            .success(function(data, status) {
-                if(status === 200)
-                    $scope.logoutResult = "OK";
-            })
-            .error(function(data, status) {
-                if(status === 204)
-                    $scope.logoutResult = "error";
             });
     };
 });
@@ -116,5 +103,18 @@ reader.controller('readController', function($scope, $http) {
     $scope.getAllPosts = function(){
         $scope.getPosts();
         $scope.getStarredPosts();
+    };
+
+    $scope.logoutResult = "";
+    $scope.logout = function() {
+        $http.post('/logout', "")
+            .success(function(data, status) {
+                if(status === 200)
+                    $scope.logoutResult = "OK";
+            })
+            .error(function(data, status) {
+                if(status === 204)
+                    $scope.logoutResult = "error";
+            });
     };
 });
