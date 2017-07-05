@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-ng-controller="readController" data-ng-init="getPosts()" ng-app="reader">
+<html data-ng-controller="readController" data-ng-init="getAllPosts()" ng-app="reader">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,12 +24,14 @@
         <table class="table table-striped">
             <tr ng-repeat="post in posts">
                 <td>
-                    <a href="" ng-click="star=true; starPost(post.id)" ng-show="!star">
-                        <img src="./images/unstarred.png" height="40" width="40">
-                    </a>
-                    <a href="" ng-click="star=false" ng-show="star">
-                        <img src="./images/starred.png" height="40" width="40">
-                    </a>
+                    <div ng-repeat="starredPost in starredPosts">
+                        <a href="" ng-click="star=true; starPost(post.id)" ng-show="!star && !(post.id == starredPost)">
+                            <img src="./images/unstarred.png" height="40" width="40">
+                        </a>
+                        <a href="" ng-click="star=false" ng-show="star || (post.id == starredPost)">
+                            <img src="./images/starred.png" height="40" width="40">
+                        </a>
+                    </div>
                 </td>
                 <td>
                     <span ng-show="post.media_thumbnail!='null'">

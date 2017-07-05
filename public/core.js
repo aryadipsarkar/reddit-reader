@@ -80,7 +80,6 @@ reader.controller('readController', function($scope, $http) {
             .success(function (data, status) {
                 $scope.posts = [];
                 $scope.rawPosts = data.message;
-                // $scope.rawPosts = $scope.rawPosts.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
                 if (status !== 204) {
                     for (var i = 0; i < $scope.rawPosts.length; i++) {
                         $scope.posts.push($scope.rawPosts[i]);
@@ -104,17 +103,26 @@ reader.controller('readController', function($scope, $http) {
             });
     };
 
-    getStars.controller('favoritesController', function ($scope, $http) {
-        $scope.starPost = function () {
-            $http.get('/getFavorites')
-                .success(function (data, status) {
+    $scope.getStarredPosts = function () {
+        $http.get('/getFavorites')
+            .success(function (data, status) {
+                $scope.starredPosts = [];
+                $scope.rawStarredPosts = data.ids;
+                if (status !== 204 && status !== 400) {
+                    for (var i = 0; i < $scope.rawStarredPosts.length; i++) {
+                        $scope.starredPosts.push($scope.rawStarredPosts[i]);
+                    }
+                }
+            })
+            .error(function (error) {
+                console.log('Error: ' + error.message);
+            });
+    };
 
-                })
-                .error(function (error) {
-                    console.log('Error: ' + error.message);
-                });
-        };
-    });
+    $scope.getAllPosts = function(){
+        $scope.getPosts();
+        $scope.getStarredPosts();
+    };
 });
 
 // angular.bootstrap(document.getElementById("app2"), ['logout']); TODO: fix me

@@ -9,7 +9,7 @@ app.use(session({
   secret: 'cats are the best',
   resave: true,
   saveUninitialized: true,
-  cookie: { maxAge: 60000, secure: false }
+  cookie: { maxAge: 600000, secure: false }
 }));
 
 /** MySQL **/
@@ -212,9 +212,10 @@ app.post('/setFavorite', function (req, res) {
  * @apiName Get favorites
  * @apiGroup favorites
  *
- * @apiSuccess {status} 200 user has an account
+ * @apiSuccess {list} ids a list of starred ids
  */
 app.get('/getFavorites', function (req, res) {
+    console.log('Get favorites');
     if(req.session && req.session.user) {
         connection.query('SELECT user_id FROM users where username = ?;', req.session.user, function (error, userIdResults) {
             connection.query('SELECT * FROM starred_posts where user_id = ?;', userIdResults[0].user_id, function (error, favPosts) {
@@ -222,8 +223,21 @@ app.get('/getFavorites', function (req, res) {
                     console.log(error);
                     res.sendStatus(400);
                 }
+                else if(favPosts.length === 0) {
+                    console.log('No content');
+                    res.sendStatus(204);
+                }
                 else {
-                    res.sendStatus(200);
+                    var starredPosts = '';
+                    for (var i = 0; i < favPosts.length; i++) {
+                        var post_id = '"'+favPosts[i].post_id+'"';
+                        starredPosts = starredPosts.concat(post_id);
+
+                        if (i !== favPosts.length - 1)
+                            starredPosts = starredPosts.concat(",");
+                    }
+                    console.log('starred:' + starredPosts);
+                    res.send('{"ids":[' + starredPosts + ']}');
                 }
             });
         });
