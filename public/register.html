@@ -24,6 +24,7 @@
         <h1>Register</h1>
         <div id="username-form" class="row">
             <div class="col-sm-8 col-sm-offset-0 text-left">
+                <!-- Form to get user input in registering a new user -->
                 <form>
                     <div class="form-group" align="left">
                         <p>Username:</p>
@@ -43,6 +44,7 @@
                     <button type="submit" class="btn btn-primary btn-lg" ng-click="registerUser()">Register</button>
                 </form>
                 <BR>
+                <!-- Displays success or failure of registration. If successful, user can move on to login -->
                 <p>Result: {{ registeredUsername }}</p>
                 <p ng-show="registeredUsername && registeredUsername != 'error'"><a href="./login.html"><b>Continue to login</b></a></p>
             </div>

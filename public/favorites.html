@@ -26,9 +26,12 @@
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
+            <!-- Iterate through all the posts and show them in the table-->
             <tbody ng-repeat="post in posts">
+                <!-- Iterate through all the starred posts and check if there is a match -->
                 <tr ng-repeat="starredPost in starredPosts" ng-hide="starredPost != post.id">
                     <td>
+                        <!-- Feature to expand/collapse embedded media (did not include the images) -->
                         <span ng-show="post.media_thumbnail!='null'">
                             <a href="" ng-click="show=true" ng-hide="show">
                                 <img src="{{post.media_thumbnail}}" height="50" width="50">
@@ -40,6 +43,7 @@
                         </span>
                     </td>
                     <td>
+                        <!-- Other post data -->
                         <h3><a href="https://www.reddit.com/{{post.link}}">{{ post.title }}</a></h3>
                         by {{ post.author}} | comments: <b>{{post.num_comments}}</b>
                     </td>

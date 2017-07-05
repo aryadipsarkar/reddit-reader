@@ -11,17 +11,17 @@ var connection = mysql.createConnection(options);
 var cron = require('node-cron');
 var request = require('request');
 
-// Task runs every 1 hour to refresh the data in the db
-cron.schedule('*/1 * * * *', function() {
+// Task runs every 5 minutes to refresh the data in the db
+cron.schedule('*/5 * * * *', function() {
     console.log('refreshing content...');
-    var jsonUrl = 'https://www.reddit.com/r/cats/hot.json';
+    var jsonUrl = 'https://www.reddit.com/r/videos/hot.json'; // hot.json wasn't working so I picked a random subreddit
     var rawData = '';
 
     request({url: jsonUrl, json: true}, function (error, response, body) {
         if (!error && response.statusCode === 200) {
             rawData = body;
         }
-
+        // For each listing we get from reddit, store the data in the db
         rawData.data.children.forEach(function(child) {
             var listingData = child.data;
 
@@ -33,6 +33,7 @@ cron.schedule('*/1 * * * *', function() {
                     thumbnail_url: listingData.secure_media.oembed.thumbnail_url,
                     post_id: listingData.id
                 };
+                // Insert embedded_media if it doesn't already exist. If it does, just update the record
                 connection.query('SELECT * FROM embedded_media where post_id = ?', listingData.id, function (err, results) {
                     if (results.length === 0) {
                         connection.query('INSERT INTO embedded_media SET ?', mediaInfo, function (err) {
@@ -59,6 +60,7 @@ cron.schedule('*/1 * * * *', function() {
                                 num_comments: listingData.num_comments,
                                 last_updated: new Date()
             };
+            // Insert the post if it doesn't already exist. If it does, just update the record
             connection.query('SELECT * FROM posts where post_id = ?', listingData.id, function (error, results) {
                 if (results.length === 0) {
                     connection.query('INSERT INTO posts SET ?', postInfo, function(err, result) {

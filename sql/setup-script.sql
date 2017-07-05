@@ -32,7 +32,7 @@ CREATE TABLE starred_posts (
 CREATE TABLE embedded_media (
   media_id int(11) NOT NULL AUTO_INCREMENT,
   content varchar(1000),
-  thumbnail_url varchar(500), -- all start with https://i.redditmedia.com/
+  thumbnail_url varchar(500),
   post_id varchar(20),
   PRIMARY KEY (media_id)
 ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2;

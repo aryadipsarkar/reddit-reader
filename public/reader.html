@@ -26,8 +26,10 @@
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
+            <!-- Iterate through all the posts (most recently pulled top 25 posts)-->
             <tr ng-repeat="post in posts">
                 <td>
+                    <!-- Graphic & logic for "starring" feature  -->
                     <div ng-repeat="starredPost in starredPosts">
                         <a href="" ng-click="star=true; starPost(post.id)" ng-show="!star && !(post.id == starredPost)">
                             <img src="./images/unstarred.png" height="40" width="40">
@@ -38,6 +40,7 @@
                     </div>
                 </td>
                 <td>
+                    <!-- Feature to expand/collapse embedded media -->
                     <span ng-show="post.media_thumbnail!='null'">
                         <a href="" ng-click="show=true" ng-hide="show">
                             <img src="{{post.media_thumbnail}}" height="50" width="50">
@@ -49,6 +52,7 @@
                     </span>
                 </td>
                 <td>
+                    <!-- Other post-related data-->
                     <h3><a href="https://www.reddit.com/{{post.link}}">{{ post.title }}</a></h3>
                     by {{ post.author}} | comments: <b>{{post.num_comments}}</b>
                 </td>

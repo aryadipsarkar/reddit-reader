@@ -24,6 +24,7 @@
     <div id="username-form" class="row">
         <div class="col-sm-8 col-sm-offset-0 text-left">
             <form>
+                <!-- Input form to enter login credentials-->
                 <div class="form-group" align="left">
                     <p>Username:</p>
                     <input type="text" class="form-control input-lg text-center" placeholder="Enter username here..." ng-model="formUsernameData.text">
@@ -37,6 +38,7 @@
                 <button type="submit" class="btn btn-primary btn-lg" ng-click="login()">Login</button>
             </form>
             <BR>
+            <!-- If the registration was successful, then allow the user to go to the reader-->
             <p>Result: {{ result }}</p>
             <p ng-show="result =='OK'"><a href="./reader.html"><b>Continue to reader</b></a></p>
         </div>
