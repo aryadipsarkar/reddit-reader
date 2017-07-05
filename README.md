@@ -1,4 +1,4 @@
-# easecentral-challenge
+# Reddit Reader Proj
 
 How to run locally:
 (Prereqs: nodejs and mysql should be installed)
