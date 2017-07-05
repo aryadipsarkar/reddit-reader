@@ -9,3 +9,4 @@ skills and limited time, I did not make a media_type table and post_id is popula
 deterministic results, since the last_updated date is not granular enough.
 - It would be a better user experience to use a sticky header
 - I did not implement a full authentication feature. You can easily still use the reader without logging in.
+- This repo includes the local version of the code. Configurations are different for AWS
