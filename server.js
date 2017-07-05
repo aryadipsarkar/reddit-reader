@@ -37,7 +37,7 @@ var jsonCleaner = require('./helpers/json-cleaner');
 var convertToHtml = require('./helpers/json-to-html');
 
 /**
- * @api {post} /registerUser Registers New User
+ * @api {post} /registerUser Registers new user
  * @apiName RegisterUser
  * @apiGroup User
  *
@@ -73,7 +73,7 @@ app.post('/registerUser', function (req, res) {
 });
 
 /**
- * @api {post} /login Login
+ * @api {post} /login Logs a user in
  * @apiName Login
  * @apiGroup User
  *
@@ -112,7 +112,7 @@ app.post('/login', function (req, res) {
 });
 
 /**
- * @api {post} /logout Logout
+ * @api {post} /logout Logs a user out
  * @apiName Logout
  * @apiGroup User
  *
@@ -129,20 +129,20 @@ app.post('/logout', function (req, res) {
 });
 
 /**
- * @api {get} /getPosts Get number of posts
+ * @api {get} /getPosts Returns the number of posts
  * @apiName Get Posts
  * @apiGroup Reader
  *
  * @apiSuccess {String[]} last 25 most recent posts
  */
 app.get('/getPosts', function (req, res) {
-    connection.query('SELECT p.post_title as post_title, p.post_author as post_author, ' +
+    connection.query('SELECT p.post_id as post_id, p.post_title as post_title, p.post_author as post_author, ' +
         'p.post_image as post_image, p.permalink as permalink, p.num_comments as num_comments, ' +
         't1.content as content, t1.thumbnail_url as thumbnail_url ' +
         'FROM posts p ' +
         'LEFT JOIN (SELECT * FROM embedded_media WHERE thumbnail_url NOT LIKE \'https://i.embed.ly/1/image%\') t1 ' +
         'ON t1.post_id = p.post_id ' +
-        'ORDER BY p.last_updated DESC LIMIT 25', function (error, results) {
+        'ORDER BY p.last_updated DESC, p.post_id desc LIMIT 25', function (error, results) {
         console.log("got the post request");
         if(results.length === 0) {
             res.sendStatus(204);
@@ -151,6 +151,7 @@ app.get('/getPosts', function (req, res) {
         {
             var posts = '';
             for (var i = 0; i < results.length; i++) {
+                var post_id = results[i].post_id;
                 var title = jsonCleaner(results[i].post_title);
                 var author = results[i].post_author;
                 var image_url = results[i].post_image;
@@ -158,7 +159,7 @@ app.get('/getPosts', function (req, res) {
                 var comments = results[i].num_comments;
                 var embedded_media = convertToHtml(jsonCleaner(results[i].content));
                 var embedded_thumb = results[i].thumbnail_url;
-                var postJson = '{'+
+                var postJson = '{"id":"'+ post_id + '",'+
                     '"title":"' + title + '",' +
                     '"author":"' + author + '",' +
                     '"image_url":"' + image_url + '",' +
@@ -176,6 +177,61 @@ app.get('/getPosts', function (req, res) {
             res.send('{"message":[' + posts + ']}');
         }
     });
+});
+
+/**
+ * @api {post} /setFavorite Sets a post as a favorite post for a specific user
+ * @apiName Set Favorite
+ * @apiGroup favorites
+ *
+ * @apiSuccess {status} 200 user has an account
+ */
+app.post('/setFavorite', function (req, res) {
+    var postId = req.body.id;
+    if(req.session && req.session.user) {
+        connection.query('SELECT user_id FROM users where username = ?;', req.session.user, function (error, userIdResults) {
+            connection.query('INSERT INTO starred_posts set user_id = ?, post_id = ?;', [userIdResults[0].user_id, postId], function (error, results) {
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                else {
+                    res.sendStatus(200);
+                }
+            });
+        });
+    }
+    else {
+        console.log('no user');
+        res.sendStatus(204);
+    }
+});
+
+/**
+ * @api {get} /getFavorites Returns all favorites
+ * @apiName Get favorites
+ * @apiGroup favorites
+ *
+ * @apiSuccess {status} 200 user has an account
+ */
+app.get('/getFavorites', function (req, res) {
+    if(req.session && req.session.user) {
+        connection.query('SELECT user_id FROM users where username = ?;', req.session.user, function (error, userIdResults) {
+            connection.query('SELECT * FROM starred_posts where user_id = ?;', userIdResults[0].user_id, function (error, favPosts) {
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                else {
+                    res.sendStatus(200);
+                }
+            });
+        });
+    }
+    else {
+        console.log('no user');
+        res.sendStatus(204);
+    }
 });
 
 var server = app.listen(2500, function () {

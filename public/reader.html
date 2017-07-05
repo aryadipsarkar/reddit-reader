@@ -24,7 +24,7 @@
         <table class="table table-striped">
             <tr ng-repeat="post in posts">
                 <td>
-                    <a href="" ng-click="star=true" ng-show="!star">
+                    <a href="" ng-click="star=true; starPost(post.id)" ng-show="!star">
                         <img src="./images/unstarred.png" height="40" width="40">
                     </a>
                     <a href="" ng-click="star=false" ng-show="star">

@@ -1,10 +1,10 @@
 // public/core.js
 var registerUser = angular.module('registerUser', []);
 registerUser.controller('mainController', function($scope, $http){
-    $scope.formUsernameData = {};   // Stores the username data from the user input form
-    $scope.formPasswordData = {};   // Stores password data from user input form
-    $scope.formEmailData = {};      // Stores email data from user input form
-    $scope.registeredUsername = "";            // List stores all the results
+    $scope.formUsernameData = {};       // Stores the username data from the user input form
+    $scope.formPasswordData = {};       // Stores password data from user input form
+    $scope.formEmailData = {};          // Stores email data from user input form
+    $scope.registeredUsername = "";     // List stores all the results
     
     $scope.registerUser = function() {
         var userJson = '{' +
@@ -74,50 +74,47 @@ logout.controller('loginLogoutController', function($scope, $http){
 });
 
 var reader = angular.module('reader', []);
-reader.controller('readController', function($scope, $http){
-    $scope.getPosts = function() {
+reader.controller('readController', function($scope, $http) {
+    $scope.getPosts = function () {
         $http.get('/getPosts')
-            .success(function(data, status) {
+            .success(function (data, status) {
                 $scope.posts = [];
                 $scope.rawPosts = data.message;
                 // $scope.rawPosts = $scope.rawPosts.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-                if(status !== 204) {
+                if (status !== 204) {
                     for (var i = 0; i < $scope.rawPosts.length; i++) {
                         $scope.posts.push($scope.rawPosts[i]);
                     }
                 }
             })
-            .error(function(error) {
+            .error(function (error) {
                 $scope.posts.push("ERROR");
                 console.log('Error: ' + error.message);
             });
     };
-});
 
-var star = angular.module('star', []);
-star.controller('favoritesController', function($scope, $http){
-    $scope.starPost = function() {
-        $http.post('/setFavorite')
-            .success(function(data, status) {
-
+    $scope.starPost = function (post_id) {
+        var starredPostJson = '{"id":"' + post_id + '"}';
+        $http.post('/setFavorite', starredPostJson)
+            .success(function (data, status) {
+                console.log(status);
             })
-            .error(function(error) {
+            .error(function (error) {
                 console.log('Error: ' + error.message);
             });
     };
-});
 
-var getStars = angular.module('getStars', []);
-getStars.controller('favoritesController', function($scope, $http){
-    $scope.starPost = function() {
-        $http.get('/getFavorites')
-            .success(function(data, status) {
+    getStars.controller('favoritesController', function ($scope, $http) {
+        $scope.starPost = function () {
+            $http.get('/getFavorites')
+                .success(function (data, status) {
 
-            })
-            .error(function(error) {
-                console.log('Error: ' + error.message);
-            });
-    };
+                })
+                .error(function (error) {
+                    console.log('Error: ' + error.message);
+                });
+        };
+    });
 });
 
 // angular.bootstrap(document.getElementById("app2"), ['logout']); TODO: fix me
